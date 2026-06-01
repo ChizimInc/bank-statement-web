@@ -8,8 +8,8 @@
 ---
 
 ## 2. Backend Scaffold
-- [ ] `python -m venv .venv` inside `backend/`
-- [ ] Install: `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `pydantic>=2`, `python-multipart`
+- [x] `python -m venv .venv` inside `backend/`
+- [x] Install: `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `pydantic>=2`, `python-multipart`
 - [x] `app/db.py` — SQLite engine, `SessionLocal`, `Base`; call `Base.metadata.create_all` on startup
 - [x] `app/models/transaction.py` — `Transaction` ORM model (`id, date, value_date, description, reference, amount, currency, category, dedup_hash`)
 - [x] `app/models/rule.py` — `CategoryRule` ORM model (`id, pattern, category, priority`)
@@ -18,7 +18,7 @@
   - `SkippedRow(source_line, statement_nr, reason)`, `IgnoredRow(source_line, statement_nr, reason)` — `source_line` is the physical CSV line; `statement_nr` is the value from the `Nr` column when present
   - `ImportResult(imported, skipped, ignored, skipped_rows, ignored_rows, transactions)`
 - [x] `app/main.py` — create app, register routers, add CORS middleware
-- [ ] Smoke test: `GET /` returns `{"status": "ok"}` — test written in `tests/test_health.py`; run `pytest` after venv is set up
+- [x] Smoke test: `GET /` returns `{"status": "ok"}` — verified by `tests/test_health.py` (4/4 pass)
 
 ---
 
@@ -41,12 +41,12 @@
 ---
 
 ## 4. Import Endpoint
-- [ ] `app/routers/import_.py` — `POST /import`, accepts `UploadFile` (multipart)
-- [ ] Call `ParseService.parse(await file.read())`
-- [ ] For each parsed row from `ParseResult.rows`, check `dedup_hash` against the DB to catch **cross-import duplicates** (intra-file duplicates are already caught by `ParseService`); add to `skipped_rows` with reason `"Duplicate transaction"`
+- [x] `app/routers/import_.py` — `POST /import`, accepts `UploadFile` (multipart)
+- [x] Call `ParseService.parse(await file.read())`
+- [x] For each parsed row from `ParseResult.rows`, check `dedup_hash` against the DB to catch **cross-import duplicates** (intra-file duplicates are already caught by `ParseService`); add to `skipped_rows` with reason `"Duplicate transaction"`
 - [ ] Apply `CategoryService.categorize(description, rules)` to each row before insert
-- [ ] Bulk-insert valid transactions
-- [ ] Return `ImportResult(imported=N, skipped=M, ignored=K, skipped_rows=[...], ignored_rows=[...], transactions=[...])`
+- [x] Bulk-insert valid transactions
+- [x] Return `ImportResult(imported=N, skipped=M, ignored=K, skipped_rows=[...], ignored_rows=[...], transactions=[...])`
 
 ---
 
