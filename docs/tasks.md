@@ -2,7 +2,7 @@
 
 ## 1. Repo Setup
 - [ ] Confirm monorepo layout: `backend/`, `frontend/`, `docs/`
-- [ ] Add root `.gitignore` (Python venv, `__pycache__`, `*.db`, Node `node_modules`, `.nuxt`)
+- [x] Add root `.gitignore` (Python venv, `__pycache__`, `*.db`, Node `node_modules`, `.nuxt`)
 - [ ] Add `README.md` skeleton — fill in at the end
 
 ---
@@ -10,29 +10,29 @@
 ## 2. Backend Scaffold
 - [ ] `python -m venv .venv` inside `backend/`
 - [ ] Install: `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `pydantic>=2`, `python-multipart`
-- [ ] `app/db.py` — SQLite engine, `SessionLocal`, `Base`; call `Base.metadata.create_all` on startup
-- [ ] `app/models/transaction.py` — `Transaction` ORM model (`id, date, value_date, description, reference, amount, currency, category, dedup_hash`)
-- [ ] `app/models/rule.py` — `CategoryRule` ORM model (`id, pattern, category, priority`)
-- [ ] `app/schemas/` — Pydantic v2 schemas using `model_config = ConfigDict(from_attributes=True)` (not v1 `orm_mode`):
+- [x] `app/db.py` — SQLite engine, `SessionLocal`, `Base`; call `Base.metadata.create_all` on startup
+- [x] `app/models/transaction.py` — `Transaction` ORM model (`id, date, value_date, description, reference, amount, currency, category, dedup_hash`)
+- [x] `app/models/rule.py` — `CategoryRule` ORM model (`id, pattern, category, priority`)
+- [x] `app/schemas/` — Pydantic v2 schemas using `model_config = ConfigDict(from_attributes=True)` (not v1 `orm_mode`):
   - `TransactionOut`, `RuleIn`, `RuleOut`
   - `SkippedRow(source_line, statement_nr, reason)`, `IgnoredRow(source_line, statement_nr, reason)` — `source_line` is the physical CSV line; `statement_nr` is the value from the `Nr` column when present
   - `ImportResult(imported, skipped, ignored, skipped_rows, ignored_rows, transactions)`
-- [ ] `app/main.py` — create app, register routers, add CORS middleware
-- [ ] Smoke test: `GET /` returns `{"status": "ok"}`
+- [x] `app/main.py` — create app, register routers, add CORS middleware
+- [ ] Smoke test: `GET /` returns `{"status": "ok"}` — test written in `tests/test_health.py`; run `pytest` after venv is set up
 
 ---
 
 ## 3. Parser Service
-- [ ] `app/services/parse.py` — `ParseService.parse(file_bytes: bytes) -> ParseResult`
-- [ ] Scan rows to find header line containing `Descriere`; discard everything before it
-- [ ] **Ignore** balance rows (`SOLD INITIAL`, `SOLD FINAL`) — record in `ignored_rows` with reason `"Balance summary row"`
-- [ ] Strip space thousand-separators; replace `,` decimal with `.`
-- [ ] Parse `DD.MM.YYYY` with `datetime.strptime`; add to `skipped_rows` with reason `"Invalid date"` if unparseable (sample: row 23 has `abc`)
-- [ ] Merge Debit / Credit into a single signed `Decimal` (debit → negative, credit → positive); add to `skipped_rows` with reason `"Missing or invalid amount"` if both are absent or non-numeric (sample: row 20 has no amounts, row 23 has `not_a_number`)
-- [ ] Add to `skipped_rows` with reason `"Missing description and amount"` for rows with neither (sample: row 16)
-- [ ] Compute `dedup_hash = SHA256(date|value_date|description|reference|amount|currency)` for each valid row; track in a `seen_hashes` set to catch duplicates **within the same file** — add to `skipped_rows` with reason `"Duplicate transaction"` before the DB is touched
-- [ ] Each row appears **at most once** in `skipped_rows` — if multiple validations fail, combine the reasons (e.g. `"Invalid date and invalid amount"`)
-- [ ] Return `ParseResult(rows, skipped_rows, ignored_rows)`
+- [x] `app/services/parse.py` — `ParseService.parse(file_bytes: bytes) -> ParseResult`
+- [x] Scan rows to find header line containing `Descriere`; discard everything before it
+- [x] **Ignore** balance rows (`SOLD INITIAL`, `SOLD FINAL`) — record in `ignored_rows` with reason `"Balance summary row"`
+- [x] Strip space thousand-separators; replace `,` decimal with `.`
+- [x] Parse `DD.MM.YYYY` with `datetime.strptime`; add to `skipped_rows` with reason `"Invalid date"` if unparseable (sample: row 23 has `abc`)
+- [x] Merge Debit / Credit into a single signed `Decimal` (debit → negative, credit → positive); add to `skipped_rows` with reason `"Missing or invalid amount"` if both are absent or non-numeric (sample: row 20 has no amounts, row 23 has `not_a_number`)
+- [x] Add to `skipped_rows` with reason `"Missing description and amount"` for rows with neither (sample: row 16)
+- [x] Compute `dedup_hash = SHA256(date|value_date|description|reference|amount|currency)` for each valid row; track in a `seen_hashes` set to catch duplicates **within the same file** — add to `skipped_rows` with reason `"Duplicate transaction"` before the DB is touched
+- [x] Each row appears **at most once** in `skipped_rows` — if multiple validations fail, combine the reasons (e.g. `"Invalid date and invalid amount"`)
+- [x] Return `ParseResult(rows, skipped_rows, ignored_rows)`
 - [ ] Verify against `sample_statement.csv`:
   - 2 ignored rows: row 1 (`SOLD INITIAL`), row 35 (`SOLD FINAL`)
   - 4 skipped rows: row 16 (missing fields), row 20 (missing amounts), row 23 (invalid date + amount), row 25 (duplicate of row 24)

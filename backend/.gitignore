@@ -1,0 +1,20 @@
+# Virtualenv
+.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# SQLite database files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables
+.env
