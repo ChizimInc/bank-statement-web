@@ -21,6 +21,7 @@ class ParsedRow:
     currency: str
     dedup_hash: str
     statement_nr: Optional[str] = None
+    source_line: Optional[int] = None
 
 
 @dataclass
@@ -142,6 +143,7 @@ class ParseService:
                 currency=currency,
                 dedup_hash=dedup_hash,
                 statement_nr=statement_nr,
+                source_line=source_line,
             ))
 
         return result
