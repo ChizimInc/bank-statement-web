@@ -94,8 +94,26 @@ watch(filters, () => {
       </button>
     </div>
 
-    <!-- Loading -->
-    <div v-if="loading" class="text-gray-400 text-sm py-8 text-center">Loading…</div>
+    <!-- Skeleton loader -->
+    <div v-if="loading" class="grid gap-4 mb-6" aria-busy="true" aria-label="Loading summary">
+      <div v-for="i in 2" :key="i" class="bg-white border rounded-lg p-4 animate-pulse">
+        <div class="h-4 bg-gray-200 rounded w-16 mb-3"></div>
+        <div class="flex gap-8">
+          <div>
+            <div class="h-3 bg-gray-100 rounded w-10 mb-1.5"></div>
+            <div class="h-4 bg-gray-200 rounded w-20"></div>
+          </div>
+          <div>
+            <div class="h-3 bg-gray-100 rounded w-14 mb-1.5"></div>
+            <div class="h-4 bg-gray-200 rounded w-20"></div>
+          </div>
+          <div>
+            <div class="h-3 bg-gray-100 rounded w-12 mb-1.5"></div>
+            <div class="h-4 bg-gray-200 rounded w-20"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Error -->
     <div v-if="error" role="alert" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded text-sm">

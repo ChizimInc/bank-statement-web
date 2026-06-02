@@ -10,7 +10,9 @@ const error = ref<string | null>(null)
 const applyMsg = ref<string | null>(null)
 
 const newRule = reactive({ pattern: '', category: '', priority: 0 })
+const addingRule = ref(false)
 const editingId = ref<number | null>(null)
+const savingEditId = ref<number | null>(null)
 const editForm = reactive({ pattern: '', category: '', priority: 0 })
 
 async function fetchRules() {
@@ -24,12 +26,15 @@ async function fetchRules() {
 async function addRule() {
   if (!newRule.pattern.trim() || !newRule.category.trim()) return
   error.value = null
+  addingRule.value = true
   try {
     await $fetch(`${base}/rules`, { method: 'POST', body: { ...newRule } })
     Object.assign(newRule, { pattern: '', category: '', priority: 0 })
     await fetchRules()
   } catch {
     error.value = 'Failed to add rule'
+  } finally {
+    addingRule.value = false
   }
 }
 
@@ -40,12 +45,15 @@ function startEdit(rule: RuleOut) {
 
 async function saveEdit(id: number) {
   error.value = null
+  savingEditId.value = id
   try {
     await $fetch(`${base}/rules/${id}`, { method: 'PUT', body: { ...editForm } })
     editingId.value = null
     await fetchRules()
   } catch {
     error.value = 'Failed to update rule'
+  } finally {
+    savingEditId.value = null
   }
 }
 
@@ -117,8 +125,12 @@ onMounted(fetchRules)
         placeholder="Priority"
         class="border rounded px-3 py-1.5 w-24 focus:outline-none focus:ring-1 focus:ring-blue-400"
       />
-      <button type="submit" class="px-4 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700">
-        Add
+      <button
+        type="submit"
+        :disabled="addingRule"
+        class="px-4 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+      >
+        {{ addingRule ? 'Adding…' : 'Add' }}
       </button>
     </form>
 
@@ -150,7 +162,11 @@ onMounted(fetchRules)
               <input v-model.number="editForm.priority" type="number" class="border rounded px-2 py-0.5 w-20 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400" />
             </td>
             <td class="py-2 flex gap-1">
-              <button @click="saveEdit(rule.id)" class="px-3 py-0.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">Save</button>
+              <button
+                @click="saveEdit(rule.id)"
+                :disabled="savingEditId === rule.id"
+                class="px-3 py-0.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 disabled:opacity-50"
+              >{{ savingEditId === rule.id ? 'Saving…' : 'Save' }}</button>
               <button @click="editingId = null" class="px-3 py-0.5 bg-gray-200 rounded text-xs hover:bg-gray-300">Cancel</button>
             </td>
           </template>
