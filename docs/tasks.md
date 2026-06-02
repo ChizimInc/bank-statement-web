@@ -1,9 +1,9 @@
 # Build Checklist
 
 ## 1. Repo Setup
-- [ ] Confirm monorepo layout: `backend/`, `frontend/`, `docs/`
+- [x] Confirm monorepo layout: `backend/`, `frontend/`, `docs/`
 - [x] Add root `.gitignore` (Python venv, `__pycache__`, `*.db`, Node `node_modules`, `.nuxt`)
-- [ ] Add `README.md` skeleton — fill in at the end
+- [x] Add `README.md` skeleton — fill in at the end
 
 ---
 
@@ -67,12 +67,12 @@
 ---
 
 ## 7. Summary Endpoint
-- [ ] `app/services/summary.py` — `SummaryService.compute(db, *, category=None, month=None, search=None) -> SummaryOut`
-  - [ ] Apply any provided filters before aggregating
-  - [ ] Group all amounts by currency — **never add MDL + EUR + USD together**
-  - [ ] Per currency: total income (sum of positive), total spending (sum of negative), balance
-  - [ ] Per-category breakdown also grouped by currency
-- [ ] `GET /summary` — optional query params: `category` (str), `month` (YYYY-MM), `search` (str); computes summary for the filtered transaction set when provided, all transactions otherwise; always grouped per currency
+- [x] `app/services/summary.py` — `SummaryService.compute(db, *, category=None, month=None, search=None) -> SummaryOut`
+  - [x] Apply any provided filters before aggregating
+  - [x] Group all amounts by currency — **never add MDL + EUR + USD together**
+  - [x] Per currency: total income (sum of positive), total spending (sum of negative), balance
+  - [x] Per-category breakdown also grouped by currency
+- [x] `GET /summary` — optional query params: `category` (str), `month` (YYYY-MM), `search` (str); computes summary for the filtered transaction set when provided, all transactions otherwise; always grouped per currency
 - [x] `GET /transactions` — query params: `category` (str), `month` (YYYY-MM), `search` (str)
 
 ---
