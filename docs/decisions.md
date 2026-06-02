@@ -45,5 +45,17 @@ Aggregation is done by iterating the filtered transaction list in Python rather 
 ## `test_categorize.py` instead of `test_category.py`
 The test file for categorization logic is named `test_categorize.py` rather than the `test_category.py` listed in tasks.md. The verb form better describes what the file tests (the act of categorizing), avoids collision with the service module name `category.py`, and makes the file's purpose unambiguous.
 
+## Frontend is a pure SPA (`ssr: false`)
+`nuxt.config.ts` sets `ssr: false`. This is a local dev tool with no SEO requirements, and all data fetching is done against a local FastAPI server. Disabling SSR avoids the entire `useNuxtApp()` / server-context complexity for `$fetch` and `useRuntimeConfig`, making composables straightforward.
+
+## `$fetch` for all API calls, not `useFetch`
+All API calls in composables and pages use `$fetch` (ofetch) directly rather than Nuxt's `useFetch`. With `ssr: false`, both work identically. `$fetch` was chosen because it returns a plain Promise, which is simpler to compose with `async/await` in imperative functions like `uploadStatement` and `patchCategory`. `useFetch` would only add value if SSR caching or auto-deduplication were needed.
+
+## TypeScript types defined manually in `types/api.ts`
+API types are hand-written against the Pydantic schemas rather than generated (e.g. via openapi-typescript). The schema is small and stable; code generation would add a build step and tooling dependency for no real benefit at this scale. Pydantic v2 serializes `Decimal` as strings in JSON mode, so Decimal fields are typed as `string`.
+
+## Loading states use text + disabled button, not visual spinner/skeleton
+The import page shows "Importing…" button text; the summary page shows "Loading…" text. These fulfil the loading-state requirement at the MVP level without adding a spinner library or skeleton component. A visual spinner or skeleton can be added as polish without changing the surrounding logic.
+
 ## No pagination on `/transactions`
 The sample dataset is small. A `limit/offset` query param can be added later if needed; building it now is premature.
