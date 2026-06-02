@@ -1,8 +1,10 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.models.rule import CategoryRule
 from app.models.transaction import Transaction
 from app.schemas.transaction import ImportResult, SkippedRow, TransactionOut
+from app.services.category import categorize
 from app.services.parse import ParseService
 
 _parser = ParseService()
@@ -10,6 +12,7 @@ _parser = ParseService()
 
 def run_import(file_bytes: bytes, db: Session) -> ImportResult:
     parsed = _parser.parse(file_bytes)
+    rules = db.query(CategoryRule).order_by(CategoryRule.priority.desc(), CategoryRule.id).all()
 
     extra_skipped: list[SkippedRow] = []
     to_insert: list[Transaction] = []
@@ -34,7 +37,7 @@ def run_import(file_bytes: bytes, db: Session) -> ImportResult:
             reference=row.reference,
             amount=row.amount,
             currency=row.currency,
-            category="Uncategorized",
+            category=categorize(row.description, rules),
             dedup_hash=row.dedup_hash,
         ))
 

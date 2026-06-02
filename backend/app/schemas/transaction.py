@@ -2,7 +2,7 @@ from datetime import date
 from decimal import Decimal
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class TransactionOut(BaseModel):
@@ -29,6 +29,18 @@ class IgnoredRow(BaseModel):
     source_line: int
     statement_nr: Optional[str]
     reason: str
+
+
+class TransactionPatch(BaseModel):
+    category: str
+    save_as_rule: bool = False
+    pattern: Optional[str] = None
+
+    @model_validator(mode="after")
+    def pattern_required_when_save_as_rule(self) -> "TransactionPatch":
+        if self.save_as_rule and not self.pattern:
+            raise ValueError("pattern is required when save_as_rule is True")
+        return self
 
 
 class ImportResult(BaseModel):
