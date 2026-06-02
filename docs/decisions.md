@@ -36,6 +36,12 @@ Summary totals are grouped per currency (MDL, EUR, USD) and never combined into 
 ## Save-as-rule proposes an editable pattern, not the full description
 When saving a manual override as a rule, the UI derives a short proposed pattern from the description (e.g. `ORANGE` from `ORANGE MOLDOVA SA ABONAMENT MOBIL`) and lets the user edit it before saving. Auto-saving the full description as a rule would create an overly narrow rule that matches only one transaction. The editable proposal trades one extra interaction for a meaningfully reusable rule.
 
+## Summary service reuses `list_transactions` for filtering
+`summary.compute()` calls `list_transactions(db, category=, month=, search=)` rather than duplicating the three filter clauses. The filter logic is non-trivial (SQLite `strftime`, `ilike`) and lives in one place. The minor cost — `list_transactions` also applies an `ORDER BY` that the aggregation doesn't need — is irrelevant at this scale.
+
+## Python aggregation in `summary.compute`, not SQL GROUP BY
+Aggregation is done by iterating the filtered transaction list in Python rather than with SQL `GROUP BY`. The dataset is small, the logic is clear and easy to test, and avoiding raw SQL keeps the service consistent with the rest of the codebase. Revisit only if performance becomes a concern.
+
 ## `test_categorize.py` instead of `test_category.py`
 The test file for categorization logic is named `test_categorize.py` rather than the `test_category.py` listed in tasks.md. The verb form better describes what the file tests (the act of categorizing), avoids collision with the service module name `category.py`, and makes the file's purpose unambiguous.
 
