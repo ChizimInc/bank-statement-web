@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import app.models  # noqa: F401 — registers ORM models with Base before create_all
 from app.db import Base, engine
 from app.routers.import_ import router as import_router
+from app.routers.rules import router as rules_router
+from app.routers.transactions import router as transactions_router
 
 
 @asynccontextmanager
@@ -25,6 +27,8 @@ app.add_middleware(
 
 
 app.include_router(import_router)
+app.include_router(rules_router)
+app.include_router(transactions_router)
 
 
 @app.get("/")

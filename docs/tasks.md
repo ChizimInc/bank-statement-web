@@ -44,23 +44,23 @@
 - [x] `app/routers/import_.py` — `POST /import`, accepts `UploadFile` (multipart)
 - [x] Call `ParseService.parse(await file.read())`
 - [x] For each parsed row from `ParseResult.rows`, check `dedup_hash` against the DB to catch **cross-import duplicates** (intra-file duplicates are already caught by `ParseService`); add to `skipped_rows` with reason `"Duplicate transaction"`
-- [ ] Apply `CategoryService.categorize(description, rules)` to each row before insert
+- [x] Apply `CategoryService.categorize(description, rules)` to each row before insert
 - [x] Bulk-insert valid transactions
 - [x] Return `ImportResult(imported=N, skipped=M, ignored=K, skipped_rows=[...], ignored_rows=[...], transactions=[...])`
 
 ---
 
 ## 5. Rules CRUD
-- [ ] `app/routers/rules.py` — `GET /rules`, `POST /rules`, `PUT /rules/{id}`, `DELETE /rules/{id}`
-- [ ] `app/services/category.py` — `CategoryService`
-  - [ ] `categorize(description: str, rules: list[CategoryRule]) -> str` — ordered by `priority`, case-insensitive contains match, fallback `"Uncategorized"`
-  - [ ] `categorize_all(db: Session)` — re-runs rules on every transaction in DB, bulk-updates categories
+- [x] `app/routers/rules.py` — `GET /rules`, `POST /rules`, `PUT /rules/{id}`, `DELETE /rules/{id}`
+- [x] `app/services/category.py` — `CategoryService`
+  - [x] `categorize(description: str, rules: list[CategoryRule]) -> str` — ordered by `priority`, case-insensitive contains match, fallback `"Uncategorized"`
+  - [x] `categorize_all(db: Session)` — re-runs rules on every transaction in DB, bulk-updates categories
 
 ---
 
 ## 6. Recategorization & Manual Override
-- [ ] `POST /rules/apply` — calls `CategoryService.categorize_all(db)`, returns `{updated: N}`
-- [ ] `PATCH /transactions/{id}` — body: `{category: str, save_as_rule?: bool, pattern?: str}`
+- [x] `POST /rules/apply` — calls `CategoryService.categorize_all(db)`, returns `{updated: N}`
+- [x] `PATCH /transactions/{id}` — body: `{category: str, save_as_rule?: bool, pattern?: str}`
   - If `save_as_rule` is false or absent, the manual change may be overwritten by future `/rules/apply` calls
   - If `save_as_rule` is true, use the provided `pattern` (user-edited in UI) to insert a new `CategoryRule`
 
@@ -73,7 +73,7 @@
   - [ ] Per currency: total income (sum of positive), total spending (sum of negative), balance
   - [ ] Per-category breakdown also grouped by currency
 - [ ] `GET /summary` — optional query params: `category` (str), `month` (YYYY-MM), `search` (str); computes summary for the filtered transaction set when provided, all transactions otherwise; always grouped per currency
-- [ ] `GET /transactions` — query params: `category` (str), `month` (YYYY-MM), `search` (str)
+- [x] `GET /transactions` — query params: `category` (str), `month` (YYYY-MM), `search` (str)
 
 ---
 
@@ -121,10 +121,10 @@
   - [ ] Row with missing/invalid amount is skipped with reason `"Missing or invalid amount"`
   - [ ] `SOLD INITIAL` / `SOLD FINAL` rows are ignored with reason `"Balance summary row"`
   - [ ] Duplicate row is skipped during import with reason `"Duplicate transaction"`
-- [ ] `tests/test_category.py`
-  - [ ] Match is case-insensitive
-  - [ ] Priority order respected — first matching rule wins
-  - [ ] No match returns `"Uncategorized"`
+- [x] `tests/test_categorize.py` (named `test_categorize.py` — see decisions.md)
+  - [x] Match is case-insensitive
+  - [x] Priority order respected — first matching rule wins
+  - [x] No match returns `"Uncategorized"`
 - [ ] `tests/test_summary.py`
   - [ ] Summary groups results per currency
   - [ ] MDL, EUR, and USD totals are never combined into one value
