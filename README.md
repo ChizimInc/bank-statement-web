@@ -53,20 +53,40 @@ The app is available at `http://localhost:3000`.
 
 ## Checks
 
-**Backend tests:**
+**Backend tests** (pytest — covers parse service, import dedup, categorization, summary grouping, and all CRUD endpoints):
 
 ```bash
 cd backend
 pytest
 ```
 
-**Frontend lint & type-check:**
+Run with coverage:
+
+```bash
+pytest --cov=app --cov-report=term-missing
+```
+
+**Frontend lint & type-check** (ESLint + Vue type checking via `vue-tsc`):
 
 ```bash
 cd frontend
 npm run lint
 npm run typecheck
 ```
+
+---
+
+## UI states
+
+The frontend handles three explicit states on every data-dependent view:
+
+| State | Where it appears | What the user sees |
+|-------|------------------|--------------------|
+| **Loading** | CSV upload in progress; transactions list and summary fetching on mount or after a filter change | Spinner / skeleton; controls disabled while the request is in flight |
+| **Empty** | No transactions imported yet; active filters return zero rows | Friendly message prompting the next action (e.g., "Upload your first statement" on the transactions page; "No results for the current filters" when filters are active) |
+| **Error** | Upload rejected (parse errors, server error); API call fails | Inline error banner with the reason returned by the backend (e.g., broken-row report, network error); user can dismiss and retry |
+
+These states are managed inside the page-level composables (`useTransactions`, `useImport`, `useSummary`) and rendered via conditional blocks in the corresponding Vue pages.
 
 ---
 
@@ -121,5 +141,5 @@ The first version of the dedup hash only covered `date|description|amount`. I ca
 ## Assignment evidence
 
 - **Plan:** [docs/plan.md](docs/plan.md)
-- **AI-reviewed PR:**
+- **AI-reviewed PR:** https://github.com/ChizimInc/bank-statement-web/pull/7
 - **Public repo:** https://github.com/ChizimInc/bank-statement-web
