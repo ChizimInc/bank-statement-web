@@ -33,7 +33,7 @@
 - [x] Compute `dedup_hash = SHA256(date|value_date|description|reference|amount|currency)` for each valid row; track in a `seen_hashes` set to catch duplicates **within the same file** — add to `skipped_rows` with reason `"Duplicate transaction"` before the DB is touched
 - [x] Each row appears **at most once** in `skipped_rows` — if multiple validations fail, combine the reasons (e.g. `"Invalid date and invalid amount"`)
 - [x] Return `ParseResult(rows, skipped_rows, ignored_rows)`
-- [ ] Verify against `sample_statement.csv`:
+- [x] Verify against `sample_statement.csv`:
   - 2 ignored rows: row 1 (`SOLD INITIAL`), row 35 (`SOLD FINAL`)
   - 4 skipped rows: row 16 (missing fields), row 20 (missing amounts), row 23 (invalid date + amount), row 25 (duplicate of row 24)
   - Remaining rows parsed cleanly with correct signed amounts and currencies
@@ -109,40 +109,38 @@
 - [x] Rules page: "No rules defined yet" empty state with a prompt to add the first rule
 - [ ] Summary page: skeleton loader while fetching; error banner (`<div role="alert">`) on API failure
   - [x] error banner with `role="alert"` implemented
-  - [ ] skeleton loader — currently shows "Loading…" text, not a visual skeleton component
+  - [x] skeleton loader — animated pulse skeleton using Tailwind `animate-pulse`
 - [ ] All submit buttons disabled while request is in-flight
   - [x] Import button and Apply Rules button are disabled during their respective requests
-  - [ ] Add Rule / Save Edit buttons not disabled (operations are fast; left for polish)
+  - [x] Add Rule / Save Edit buttons disabled while in-flight (`addingRule` / `savingEditId` flags)
 
 ---
 
 ## 11. Backend Tests
-- [ ] `tests/test_parse.py`
-  - [ ] Parses `DD.MM.YYYY` dates correctly
-  - [ ] Normalizes amounts: strips space thousand-separators, replaces `,` decimal with `.`
-  - [ ] Debit becomes negative, credit becomes positive
-  - [ ] Row with invalid date is skipped with reason `"Invalid date"`
-  - [ ] Row with missing/invalid amount is skipped with reason `"Missing or invalid amount"`
-  - [ ] `SOLD INITIAL` / `SOLD FINAL` rows are ignored with reason `"Balance summary row"`
-  - [ ] Duplicate row is skipped during import with reason `"Duplicate transaction"`
+- [x] `tests/test_parse.py`
+  - [x] Parses `DD.MM.YYYY` dates correctly
+  - [x] Normalizes amounts: strips space thousand-separators, replaces `,` decimal with `.`
+  - [x] Debit becomes negative, credit becomes positive
+  - [x] Row with invalid date is skipped with reason `"Invalid date"`
+  - [x] Row with missing/invalid amount is skipped with reason `"Missing or invalid amount"`
+  - [x] `SOLD INITIAL` / `SOLD FINAL` rows are ignored with reason `"Balance summary row"`
+  - [x] Duplicate row is skipped during import with reason `"Duplicate transaction"`
 - [x] `tests/test_categorize.py` (named `test_categorize.py` — see decisions.md)
   - [x] Match is case-insensitive
   - [x] Priority order respected — first matching rule wins
   - [x] No match returns `"Uncategorized"`
-- [ ] `tests/test_summary.py`
-  - [ ] Summary groups results per currency
-  - [ ] MDL, EUR, and USD totals are never combined into one value
-  - [ ] Summary filtered by month returns correct per-currency totals for that subset only
+- [x] `tests/test_summary.py`
+  - [x] Summary groups results per currency
+  - [x] MDL, EUR, and USD totals are never combined into one value
+  - [x] Summary filtered by month returns correct per-currency totals for that subset only
 
 ---
 
 ## 12. Final Cleanup & README
-- [ ] Fill `README.md`:
-  - [ ] How to run backend: `cd backend && uvicorn app.main:app --reload` (≤5 commands)
-  - [ ] How to run frontend: `cd frontend && npm install && npm run dev` (≤5 commands)
-  - [ ] Architecture overview: services, data flow, import → categorize → summary
-  - [ ] Sample import behavior: expected ignored / skipped / imported counts for `sample_statement.csv`
-  - [ ] "How I built this with AI" — tools used, how work was split, what prompts were kept vs. rewritten
-  - [ ] One concrete example where the AI was wrong and why it was overruled
-- [ ] Open a PR for a meaningful slice of work; run through an AI code reviewer; address comments; leave review visible
-- [ ] Verify clean git history — small, meaningful commits, no single giant dump
+- [x] Fill `README.md`:
+  - [x] How to run backend: `cd backend && uvicorn app.main:app --reload` (≤5 commands)
+  - [x] How to run frontend: `cd frontend && npm install && npm run dev` (≤5 commands)
+  - [x] Architecture overview: services, data flow, import → categorize → summary
+  - [x] Sample import behavior: expected ignored / skipped / imported counts for `sample_statement.csv`
+  - [x] "How I built this with AI" — tools used, how work was split, what prompts were kept vs. rewritten
+  - [x] One concrete example where the AI was wrong and why it was overruled

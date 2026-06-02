@@ -27,7 +27,7 @@ def list_transactions(
 ) -> list[Transaction]:
     q = db.query(Transaction)
     if category:
-        q = q.filter(Transaction.category == category)
+        q = q.filter(Transaction.category.ilike(f"%{category}%"))
     if month:
         q = q.filter(func.strftime("%Y-%m", Transaction.date) == month)
     if search:
