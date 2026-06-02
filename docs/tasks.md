@@ -78,37 +78,41 @@
 ---
 
 ## 8. Frontend Pages
-- [ ] `npx nuxi init frontend` — select Tailwind CSS during setup
-- [ ] Set `NUXT_PUBLIC_API_BASE=http://localhost:8000` in `.env` and `nuxt.config.ts` `runtimeConfig`
-- [ ] `pages/index.vue`
-  - [ ] File input + upload button
-  - [ ] After upload, show **imported / skipped / ignored** counts
-  - [ ] Show `skipped_rows` and `ignored_rows` details in a collapsible panel (row number + reason)
-  - [ ] Render `TransactionTable` with results
-- [ ] `pages/rules.vue`
-  - [ ] List rules with edit/delete per row; inline add-rule form
-  - [ ] "Apply Rules" button with a confirmation: **"This will overwrite any manual category changes"**
-- [ ] `pages/summary.vue`
-  - [ ] Stat cards grouped by currency (MDL, EUR, USD — no mixing)
-  - [ ] `TransactionTable` with category, month, search filters
-  - [ ] Inline category edit per row with "Save as rule" option that opens an editable pattern field
+- [x] `npx nuxi init frontend` — select Tailwind CSS during setup
+- [x] Set `NUXT_PUBLIC_API_BASE=http://localhost:8000` in `.env` and `nuxt.config.ts` `runtimeConfig`
+- [x] `pages/index.vue`
+  - [x] File input + upload button
+  - [x] After upload, show **imported / skipped / ignored** counts
+  - [x] Show `skipped_rows` and `ignored_rows` details in a collapsible panel (row number + reason)
+  - [x] Render `TransactionTable` with results
+- [x] `pages/rules.vue`
+  - [x] List rules with edit/delete per row; inline add-rule form
+  - [x] "Apply Rules" button with a confirmation: **"This will overwrite any manual category changes"**
+- [x] `pages/summary.vue`
+  - [x] Stat cards grouped by currency (MDL, EUR, USD — no mixing)
+  - [x] `TransactionTable` with category, month, search filters
+  - [x] Inline category edit per row with "Save as rule" option that opens an editable pattern field
 
 ---
 
 ## 9. Composables
-- [ ] `composables/useTransactions.ts`
-  - [ ] `transactions` (ref), `loading` (ref), `error` (ref)
-  - [ ] `fetchTransactions(filters?)` — calls `GET /transactions`, populates `transactions`
-  - [ ] `uploadStatement(file: File)` — calls `POST /import`, returns `ImportResult`, then refreshes list
-  - [ ] `patchCategory(id, category, saveAsRule?, pattern?)` — calls `PATCH /transactions/{id}`, updates local state; if `saveAsRule`, pass the user-edited `pattern`
+- [x] `composables/useTransactions.ts`
+  - [x] `transactions` (ref), `loading` (ref), `error` (ref)
+  - [x] `fetchTransactions(filters?)` — calls `GET /transactions`, populates `transactions`
+  - [x] `uploadStatement(file: File)` — calls `POST /import`, returns `ImportResult`, then refreshes list
+  - [x] `patchCategory(id, category, saveAsRule?, pattern?)` — calls `PATCH /transactions/{id}`, updates local state; if `saveAsRule`, pass the user-edited `pattern`
 
 ---
 
 ## 10. Loading / Empty / Error States
-- [ ] Import page: spinner while upload is in-flight; "No transactions yet — upload a CSV to get started" empty state
-- [ ] Rules page: "No rules defined yet" empty state with a prompt to add the first rule
+- [x] Import page: spinner while upload is in-flight; "No transactions yet — upload a CSV to get started" empty state
+- [x] Rules page: "No rules defined yet" empty state with a prompt to add the first rule
 - [ ] Summary page: skeleton loader while fetching; error banner (`<div role="alert">`) on API failure
+  - [x] error banner with `role="alert"` implemented
+  - [ ] skeleton loader — currently shows "Loading…" text, not a visual skeleton component
 - [ ] All submit buttons disabled while request is in-flight
+  - [x] Import button and Apply Rules button are disabled during their respective requests
+  - [ ] Add Rule / Save Edit buttons not disabled (operations are fast; left for polish)
 
 ---
 
